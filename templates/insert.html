@@ -4,13 +4,20 @@
     <title>Insert User</title>
 </head>
 <body>
-    <h1>Insert User</h1>
+    <h1>Insert User Dni</h1>
     <form id="user-form">
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required><br>
 
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required><br>
+        <label for="dni">Dni:</label>
+        <input type="number" name="dni" id="dni" required><br>
+
+        <label for="nombre">nombre:</label>
+        <input type="text" name="nombre" id="nombre" required><br>
+
+        <label for="apellido_paterno">apellido_paterno:</label>
+        <input type="text" name="apellido_paterno" id="apellido_paterno" required><br>
+        
+        <label for="apellido_materno">apellido_materno:</label>
+        <input type="text" name="apellido_materno" id="apellido_materno" required><br>
 
         <button type="submit" id="submit-button">Insert User</button>
     </form>
@@ -21,22 +28,30 @@
             event.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
 
             // Obtener los valores de los campos del formulario
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
+
+            var dni = document.getElementById("dni").value;
+            var name = document.getElementById("nombre").value;
+            var apellido_pat = document.getElementById("apellido_paterno").value;
+            var apellido_mat = document.getElementById("apellido_materno").value;
+
 
             // Crear un objeto JSON con los valores
-            var userData = {
-                "username": username,
-                "email": email
-            };
+
+            var dniData = {
+                "dni": dni,
+                "name": name,
+                "ape_pat": apellido_pat,
+                "ape_mat": apellido_mat
+            }
+
 
             // Realizar una solicitud POST con fetch y enviar los datos en formato JSON
-            fetch("/users/", {
+            fetch("/dni/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(userData)
+                body: JSON.stringify(dniData)
             })
             .then(response => response.json())
             .then(data => {

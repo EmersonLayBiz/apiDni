@@ -1,53 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Consulta de Usuarajio</title>
+    <title>Consulta de DNI</title>
 </head>
 <body>
+    
     <a href="/insert">Insert User</a>
     <a href="/consult_dni">Consulta Dni</a>
-    <h1>Consulta de Usuario por ID</h1>
-    <form>
-        <label for="userId">ID de Usuario:</label>
-        <input type="number" id="userId" name="userId">
-        <button type="button" onclick="getUserData()">Consultar</button>
+    <h1>Consulta de DNI</h1>
+    <form onsubmit="return false">
+        <label for="dni">Número de DNI:</label>
+        <input type="number" id="dni" required>
+        <button id="getDniButton">Consultar DNI</button>
     </form>
-    <div id="userData">
-        <h2>Información del Usuario</h2>
-        <p><strong>Nombre de Usuario:</strong> <span id="username"></span></p>
-        <p><strong>Correo Electrónico:</strong> <span id="email"></span></p>
+
+    <div id="dniData" style="display: none;">
+        <h2>Información del DNI</h2>
+        <p><strong>DNI:</strong> <span id="dniNumber"></span></p>
+        <p><strong>Nombre:</strong> <span id="dniName"></span></p>
+        <p><strong>Apellido Paterno:</strong> <span id="dniApePat"></span></p>
+        <p><strong>Apellido Materno:</strong> <span id="dniApeMat"></span></p>
     </div>
 
     <script>
-        async function getUserData() {
-            const userId = document.getElementById("userId").value;
-            const userDataContainer = document.getElementById("userData");
-            const usernameElement = document.getElementById("username");
-            const emailElement = document.getElementById("email");
+        const getDniButton = document.getElementById("getDniButton");
+        const dniInput = document.getElementById("dni");
+        const dniData = document.getElementById("dniData");
+        const dniNumberElement = document.getElementById("dniNumber");
+        const dniNameElement = document.getElementById("dniName");
+        const dniApePatElement = document.getElementById("dniApePat");
+        const dniApeMatElement = document.getElementById("dniApeMat");
 
-            userDataContainer.style.display = "none"; // Ocultar los datos anteriores
+        getDniButton.addEventListener("click", async () => {
+            event.preventDefault();
+            const dni = dniInput.value;
 
-            if (!userId) {
-                alert("Por favor, ingrese un ID de usuario.");
+            if (!dni) {
+                alert("Por favor, ingrese un número de DNI.");
                 return;
             }
 
             try {
-                const response = await fetch(`/users/${userId}`);
-                const userData = await response.json();
+                const response = await fetch(`/dni/${dni}`);
+                const dniInfo = await response.json();
 
                 if (response.status === 200) {
-                    userDataContainer.style.display = "block"; // Mostrar los datos recuperados
-                    usernameElement.textContent = userData.username;
-                    emailElement.textContent = userData.email;
+                    dniData.style.display = "block"; // Mostrar los datos recuperados
+                    dniNumberElement.textContent = dniInfo.dni;
+                    dniNameElement.textContent = dniInfo.nombre;
+                    dniApePatElement.textContent = dniInfo.apellido_pat;
+                    dniApeMatElement.textContent = dniInfo.apellido_mat;
                 } else {
-                    alert("Usuario no encontrado");
+                    dniData.style.display = "none"; // Ocultar la información en caso de error
+                    alert("DNI no encontrado");
                 }
             } catch (error) {
                 console.error(error);
-                alert("Error al consultar el usuario.");
+                alert("Error al consultar el DNI.");
             }
-        }
+        });
     </script>
 </body>
 </html>
+

@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException, Query, Request
-from schemas.dni_schema import DniSchema
+from fastapi import FastAPI, HTTPException, Query, Request,Path
+from schemas.dni_schema import DniSchema, DniUserSchema
 from models.dni_model import DniModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -50,6 +50,38 @@ def create_user(user: DniSchema):
     except Exception as e:  
         # Manejar cualquier excepción que pueda ocurrir durante la inserción
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+
+
+
+@app.get("/dni/{dni}")
+def get_one_dni(dni: int = Path(..., description="Número de DNI")):
+    dictionary = {}
+    data = conn.get_dni_one(dni)
+    print(data)
+    if data is not None:
+        dictionary["dni"] = data[0]
+        dictionary["nombre"] = data[1]
+        dictionary["apellido_pat"] = data[2]
+        dictionary["apellido_mat"] = data[3]
+        return dictionary 
+
+@app.post("/dni/")
+def inser_dni(dni: DniUserSchema):
+    try:
+        dnis = dni.dni
+        name = dni.name
+        ape_pat = dni.ape_pat
+        ape_mat = dni.ape_mat
+        conn.create_dni(dnis, name, ape_pat, ape_mat)
+        return{
+            "message": "User Dni inserted succesfull"
+        }
+    except Exception as e:  
+        # Manejar cualquier excepción que pueda ocurrir durante la inserción
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/users/")
 def get_one(userId: int = Query(..., description="Insert Userd ID")):
@@ -104,7 +136,7 @@ def delete_user(user_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Obtener un usuario por ID
-@app.get("/users/{user_id}", response_model=DniSchema)
+@app.get("/usersdc/{user_id}", response_model=DniSchema)
 def read_user(user_id: int):
     user = conn.get_user_by_id(user_id)
     if user is None:
