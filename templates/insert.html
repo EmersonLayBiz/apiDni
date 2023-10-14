@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert User</title>
+</head>
+<body>
+    <h1>Insert User</h1>
+    <form id="user-form">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <button type="submit" id="submit-button">Insert User</button>
+    </form>
+
+    <script>
+        // Escuchar el evento de envío del formulario
+        document.getElementById("user-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
+
+            // Obtener los valores de los campos del formulario
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+
+            // Crear un objeto JSON con los valores
+            var userData = {
+                "username": username,
+                "email": email
+            };
+
+            // Realizar una solicitud POST con fetch y enviar los datos en formato JSON
+            fetch("/users/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Manejar la respuesta del servidor, por ejemplo, mostrar un mensaje de éxito
+                alert(data.message);
+            })
+            .catch(error => {
+                // Manejar errores, como mostrar un mensaje de error
+                alert("Error: " + error);
+            });
+        });
+    </script>
+</body>
+</html>
